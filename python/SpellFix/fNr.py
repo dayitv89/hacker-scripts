@@ -1,6 +1,9 @@
 import sys
 from os import walk
 from spellCheck import *
+import ntpath
+from os.path import expanduser
+home = expanduser("~")
 
 keywords = [f.rstrip().lower() for f in open('keywords.txt', 'r')]
 print keywords
@@ -15,16 +18,19 @@ def printDetails(filePath):
     for line in open(filePath, 'r'):
         lineNo += 1
         lines = re.findall('[a-z]+', line.lower())
+        cmt = ''
+        if line.startswith('//'): cmt = ' //-- cmt'
         for word in lines:
             word = word.rstrip().lower()
             if word in keywords: continue
             a = correct(word)
             if a != word:
-                wordChange = 'Line: '+str(lineNo)+' => '+word+' != '+a+'\n'
+                wordChange = 'Line: '+str(lineNo)+' => '+word+' != '+a+cmt+'\n'
                 val += wordChange
                 print wordChange
     val += "\n\n----------------------------------------------------------\n\n"
-    file_op = open(filePath+".gds.txt", "w")
+    head, tail = ntpath.split(filePath)
+    file_op = open(home+'/Desktop/swift-typo/'+tail+".gds.txt", "w")
     file_op.write(val)
     file_op.close()
 
