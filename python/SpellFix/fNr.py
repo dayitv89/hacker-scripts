@@ -2,6 +2,9 @@ import sys
 from os import walk
 from spellCheck import *
 
+keywords = [f.rstrip().lower() for f in open('keywords.txt', 'r')]
+print keywords
+
 def printDetails(filePath):
     print filePath
     val = ''
@@ -13,8 +16,10 @@ def printDetails(filePath):
         lineNo += 1
         lines = re.findall('[a-z]+', line.lower())
         for word in lines:
-            a = correct(word.lower())
-            if a != word.lower():
+            word = word.rstrip().lower()
+            if word in keywords: continue
+            a = correct(word)
+            if a != word:
                 wordChange = 'Line: '+str(lineNo)+' => '+word+' != '+a+'\n'
                 val += wordChange
                 print wordChange

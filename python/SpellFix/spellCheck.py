@@ -1,6 +1,9 @@
 import re, collections
+import enchant
 
-def words(text): return re.findall('[a-z]+', text.lower()) 
+d = enchant.Dict("en_US")
+
+def words(text): return re.findall('[a-z]+', text.lower())
 
 def train(features):
     model = collections.defaultdict(lambda: 1)
@@ -26,6 +29,6 @@ def known_edits2(word):
 def known(words): return set(w for w in words if w in NWORDS)
 
 def correct(word):
+    if d.check(word): return word
     candidates = known([word]) or known(edits1(word)) or known_edits2(word) or [word]
     return max(candidates, key=NWORDS.get)
-

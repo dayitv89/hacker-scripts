@@ -1,5 +1,4 @@
-from os import *
-import sys
+
 
 files = []
 dirs = [sys.argv[1]]
