@@ -15,24 +15,30 @@ def printDetails(filePath):
     val = "\n\n=============================================================\n"
     val += filePath
     val += "\n--------------------------------------------------------------\n"
+    arrLines = [];
+    isReadOne = False
     for line in open(filePath, 'r'):
         lineNo += 1
         lines = re.findall('[a-z]+', line.lower())
         cmt = ''
-        if line.startswith('//'): cmt = ' //-- cmt'
+        if not (line.startswith('//') or line.startswith('#')): continue;
         for word in lines:
             word = word.rstrip().lower()
             if word in keywords: continue
             a = correct(word)
             if a != word:
-                wordChange = 'Line: '+str(lineNo)+' => '+word+' != '+a+cmt+'\n'
+                isReadOne = True
+                wordChange = 'Line: '+str(lineNo)+' :: '+word+' => '+a+cmt+'\n'
                 val += wordChange
                 print wordChange
+                arrLines.append({'line':str(lineNo), 'orignal':word , 'modify':a})
+    val += "\n"+str(arrLines)
     val += "\n\n----------------------------------------------------------\n\n"
     head, tail = ntpath.split(filePath)
-    file_op = open(home+'/Desktop/swift-typo/'+tail+".gds.txt", "w")
-    file_op.write(val)
-    file_op.close()
+    if isReadOne:
+        file_op = open(home+'/Desktop/swift-typo/'+tail+".gds.txt", "w")
+        file_op.write(val)
+        file_op.close()
 
 files = []
 dirs = [sys.argv[1]]
